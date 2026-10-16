@@ -127,33 +127,6 @@ class MonitorViewModel(app: Application) : AndroidViewModel(app) {
 
     private lateinit var client: Mqtt3AsyncClient
 
-    /*
-    init {
-        client = Mqtt3Client.builder()
-            .identifier("fallguard-" + UUID.randomUUID())
-            .serverHost(MQTT_HOST)
-            .serverPort(MQTT_PORT)
-            .automaticReconnectWithDefaultConfig()
-            .addConnectedListener {
-                _state.update { it.copy(connection = ConnectionState.CONNECTED) }
-                subscribeAll()
-            }
-            .addDisconnectedListener {
-                _state.update { it.copy(connection = ConnectionState.DISCONNECTED) }
-            }
-            .buildAsync()
-
-        client.publishes(MqttGlobalPublishFilter.ALL) { publish ->
-            handleMessage(String(publish.payloadAsBytes, Charsets.UTF_8))
-        }
-
-        client.connectWith()
-            .keepAlive(30)
-            .cleanSession(true)
-            .send()
-    }
-    */
-
     fun openConnection(topic: String) {
         val selectedTopic = topic.trim()
 
@@ -258,44 +231,6 @@ class MonitorViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
         }
-    }
-    fun openConnection122(topic: String) {
-        val ipv4 = InetAddress.getAllByName(MQTT_HOST)
-            .filterIsInstance<Inet4Address>()
-            .first()
-
-        Log.d(TAG, "Conectando mediante IPv4: ${ipv4.hostAddress}")
-
-        client = Mqtt3Client.builder()
-            .identifier("fallguard-" + UUID.randomUUID())
-
-            .serverHost(ipv4)
-            .serverPort(MQTT_PORT)
-            .automaticReconnectWithDefaultConfig()
-            .addConnectedListener {
-                //_state.update { it.copy(connection = ConnectionState.CONNECTED) }
-                Log.d(TAG, "Conectado al broker")
-                _state.update { it.copy(connection = ConnectionState.CONNECTED, error = null) }
-                subscribeAll(topic)
-            }
-            .addDisconnectedListener {ctx ->
-                val msg = ctx.cause.message ?: ctx.cause.javaClass.simpleName
-                Log.e(TAG, "Desconectado: $msg", ctx.cause)
-                _state.update {
-                    it.copy(connection = ConnectionState.DISCONNECTED, error = msg)
-                }
-                //_state.update { it.copy(connection = ConnectionState.DISCONNECTED) }
-            }
-            .buildAsync()
-
-        client.publishes(MqttGlobalPublishFilter.ALL) { publish ->
-            handleMessage(String(publish.payloadAsBytes, Charsets.UTF_8))
-        }
-
-        client.connectWith()
-            .keepAlive(30)
-            .cleanSession(true)
-            .send()
     }
 
     private fun subscribeAll(topic: String) {
