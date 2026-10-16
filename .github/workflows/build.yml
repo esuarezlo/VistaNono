@@ -3,7 +3,7 @@ name: Build Android APK
 on:
   push:
     tags:
-      * 'v*' # Se activa cuando creas un tag como v1.0.0
+      -"v*" # Se activa cuando creas un tag como v1.0.0
 
 jobs:
   build:
