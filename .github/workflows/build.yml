@@ -55,6 +55,6 @@ jobs:
           else
             gh release create "$TAG" "$APK" \
               --title "Versión $TAG" \
-              --generate-notes \
-              --verify-tag
+              --generate-notes
           fi
+
